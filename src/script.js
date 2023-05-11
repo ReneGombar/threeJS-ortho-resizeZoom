@@ -9,21 +9,25 @@ const cursor = {
 }
 
 window.addEventListener('resize',()=>{
+    console.log('resize occured')
+    
     sizes.width = window.innerWidth
     sizes.height = window.innerHeight
+    const aspectRatio = sizes.width / sizes.height
 
-    console.log('resize occured')
-    camera.left = -1 * (sizes.width/sizes.height)
-    camera.right = 1 * (sizes.width/sizes.height)
-    //aspectRatio = sizes.width / sizes.height
+    camera.left = -1 * aspectRatio
+    camera.right = 1 * aspectRatio
 
-    console.log(camera.left, camera.right)
     const boundingSphere = scene.children[0].geometry.boundingSphere.radius
     const cameraWidth = Math.abs(camera.left) + Math.abs(camera.right) 
-    console.log(boundingSphere)
+    console.log(scene)
     
+    // bounding Sphere is the radius of the mesh 
+    // and is compared to the width of the cameraView
+
     camera.zoom = boundingSphere *2 < cameraWidth
-        ? 1 : cameraWidth /  (boundingSphere * 2)
+        ? 0.9 : cameraWidth /  (boundingSphere * 2) - .1
+    
     console.log('Camera zoom: '+camera.zoom)
     
     //update aspect ratio
@@ -55,7 +59,7 @@ const canvas = document.querySelector('canvas.webgl')
 // Sizes
 const sizes = {
     width: window.innerWidth,
-    height: window.innerHeight
+    height: window.innerHeight,
 }
 
 // Scene
@@ -63,10 +67,10 @@ const scene = new THREE.Scene()
 
 // Object
 const mesh = new THREE.Mesh(
-    //new THREE.BoxGeometry(1, 1, 1),
     new THREE.SphereGeometry(1, 10, 10),
     new THREE.MeshBasicMaterial({ color: 0xff0000, wireframe: true  })
 )
+mesh.geometry.computeBoundingSphere()
 scene.add(mesh)
 
 // Camera
@@ -78,11 +82,14 @@ const camera = new THREE.OrthographicCamera(
     1,
     - 1, 
     1, 10)
-camera.zoom = 1
 
-
-//camera.position.x = 2
-//camera.position.y = 2
+//get boundingSphere radius to determine the zoom
+const boundingSphere = scene.children[0].geometry.boundingSphere.radius
+const cameraWidth = Math.abs(camera.left) + Math.abs(camera.right) 
+camera.zoom = boundingSphere *2 < cameraWidth
+        ? 0.9 : cameraWidth /  (boundingSphere * 2) - .1
+console.log(camera.zoom)
+camera.updateProjectionMatrix()
 camera.position.z = 2
 camera.lookAt(mesh.position)
 scene.add(camera)
