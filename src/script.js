@@ -8,6 +8,11 @@ const cursor = {
     y:0
 }
 
+// this is the amount of zoom that is amplied
+// at all times to give a percentage of the scene
+// inside of the viewport. In percentage
+const sceneViewSize = 90
+
 window.addEventListener('resize',()=>{
     console.log('resize occured')
     
@@ -20,13 +25,13 @@ window.addEventListener('resize',()=>{
 
     const boundingSphere = scene.children[0].geometry.boundingSphere.radius
     const cameraWidth = Math.abs(camera.left) + Math.abs(camera.right) 
-    console.log(scene)
+    
     
     // bounding Sphere is the radius of the mesh 
     // and is compared to the width of the cameraView
 
     camera.zoom = boundingSphere *2 < cameraWidth
-        ? 0.9 : cameraWidth /  (boundingSphere * 2) - .1
+        ? sceneViewSize / 100 : cameraWidth /  (boundingSphere * 2) * sceneViewSize / 100
     
     console.log('Camera zoom: '+camera.zoom)
     
@@ -87,7 +92,7 @@ const camera = new THREE.OrthographicCamera(
 const boundingSphere = scene.children[0].geometry.boundingSphere.radius
 const cameraWidth = Math.abs(camera.left) + Math.abs(camera.right) 
 camera.zoom = boundingSphere *2 < cameraWidth
-        ? 0.9 : cameraWidth /  (boundingSphere * 2) - .1
+        ? sceneViewSize / 100 : cameraWidth /  (boundingSphere * 2) * sceneViewSize / 100
 console.log(camera.zoom)
 camera.updateProjectionMatrix()
 camera.position.z = 2
