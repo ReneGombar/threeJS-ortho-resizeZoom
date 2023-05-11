@@ -1,0 +1,13 @@
+* {margin:0;
+    padding:0;
+    }
+
+    body {
+        overflow: hidden;
+    }
+    .webgl{
+        position: fixed;
+        top:0;
+        bottom:0;
+        outline:0;
+    }
